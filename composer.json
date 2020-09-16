@@ -1,0 +1,23 @@
+{
+    "name": "halloverden/symfony-doctrine-sql-logger-bundle",
+    "description": "Better logging of SQL queries in Doctrine DBAL for Symfony.",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tom Roar Furunes",
+            "email": "tom.roar@halloverden.no"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": "^7.3",
+        "doctrine/doctrine-bundle": "^2.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "HalloVerden\\DoctrineSqlLoggerBundle\\": ""
+        }
+    }
+}
