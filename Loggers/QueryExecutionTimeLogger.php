@@ -93,7 +93,7 @@ class QueryExecutionTimeLogger implements SQLLogger {
     $event = $this->stopWatch->stop(self::STOPWATCH_NAME);
     $duration = $event->getDuration();
 
-    if ($duration <= $this->executionTimeThreshold) {
+    if ($duration < $this->executionTimeThreshold) {
       return;
     }
 
