@@ -1,0 +1,6 @@
+hallo_verden_doctrine_sql_logger:
+    loggers:
+        HalloVerden\DoctrineSqlLoggerBundle\Loggers\QueryExecutionTimeLogger:
+            enabled: true
+            connections:
+                - default
