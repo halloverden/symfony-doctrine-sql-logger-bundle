@@ -132,7 +132,7 @@ class QueryExecutionTimeLogger implements SQLLogger {
         continue;
       }
 
-      // detect if the too long string must be shorten
+      // detect if the string is too long, and must be shortened
       if (self::MAX_STRING_LENGTH < mb_strlen($params[$index], 'UTF-8')) {
         $params[$index] = mb_substr($params[$index], 0, self::MAX_STRING_LENGTH - 6, 'UTF-8').' [...]';
         continue;
