@@ -77,6 +77,7 @@ class QueryExecutionTimeLogger implements SQLLogger {
    * @inheritDoc
    */
   public function startQuery($sql, ?array $params = null, ?array $types = null) {
+    $this->stopWatch->reset();
     $this->stopWatch->start(self::STOPWATCH_NAME);
 
     $this->currentQuery = ['sql' => $sql, 'params' => null === $params ? [] : $this->normalizeParams($params)];
@@ -91,6 +92,7 @@ class QueryExecutionTimeLogger implements SQLLogger {
     }
 
     $event = $this->stopWatch->stop(self::STOPWATCH_NAME);
+    $this->stopWatch->reset();
     $duration = $event->getDuration();
 
     if ($duration < $this->executionTimeThreshold) {
