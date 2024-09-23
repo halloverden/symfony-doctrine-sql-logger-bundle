@@ -56,11 +56,16 @@ final class HalloVerdenDoctrineSqlLoggerBundle extends AbstractBundle {
             $loggerConfig['backtraceLog'],
             service('debug.stopwatch')->nullOnInvalid()
           ])
-        ->alias(QueryExecutionTimeLoggerInterface::class, $queryExecutionTimeLoggerId)
         ->set($alias . '.doctrine_middleware.' . $loggerConfig['connection'], LogQueryExecutionTimeMiddleware::class)
           ->args([service($queryExecutionTimeLoggerId)])
           ->tag('doctrine.middleware', ['connection' => $loggerConfig['connection']])
       ;
+
+      $builder->registerAliasForArgument($queryExecutionTimeLoggerId, QueryExecutionTimeLoggerInterface::class, $loggerConfig['connection'] . 'QueryExecutionTimeLogger');
+
+      if ($loggerConfig['connection'] === 'default') {
+        $builder->setAlias(QueryExecutionTimeLogger::class, $queryExecutionTimeLoggerId);
+      }
     }
   }
 
