@@ -15,7 +15,8 @@
         "php": ">=8.2",
         "doctrine/doctrine-bundle": "^2.6",
         "symfony/stopwatch": "^6.4|^7.1",
-        "doctrine/dbal": "^4.0"
+        "doctrine/dbal": "^4.0",
+        "symfony/uid": "^6.4"
     },
     "autoload": {
         "psr-4": {

@@ -5,10 +5,11 @@ namespace HalloVerden\DoctrineSqlLoggerBundle\Logger;
 use HalloVerden\DoctrineSqlLoggerBundle\Event\QueryExecutionTimeEvent;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 final class QueryExecutionTimeLogger implements QueryExecutionTimeLoggerInterface {
-  private const STOPWATCH_NAME = 'query_execution_time_logger';
+  private const STOPWATCH_NAME_PREFIX = 'query_execution_time_logger_';
 
   private readonly Stopwatch $stopwatch;
 
@@ -31,7 +32,7 @@ final class QueryExecutionTimeLogger implements QueryExecutionTimeLoggerInterfac
   }
 
   public function start(string $sql, array $params = [], array $types = []): QueryExecutionTimeEvent {
-    return new QueryExecutionTimeEvent($this->stopwatch->start(self::STOPWATCH_NAME), $this->getThreshold(), $sql, $params, $types);
+    return new QueryExecutionTimeEvent($this->stopwatch->start($this->createStopwatchName()), $this->getThreshold(), $sql, $params, $types);
   }
 
   public function stop(QueryExecutionTimeEvent $event): void {
@@ -79,6 +80,13 @@ final class QueryExecutionTimeLogger implements QueryExecutionTimeLoggerInterfac
 
   private function getThreshold(): int {
     return \array_shift($this->thresholds) ?? $this->getDefaultThreshold();
+  }
+
+  /**
+   * @return string
+   */
+  private function createStopwatchName(): string {
+    return self::STOPWATCH_NAME_PREFIX . Uuid::v4();
   }
 
 }
