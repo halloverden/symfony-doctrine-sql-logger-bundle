@@ -25,7 +25,8 @@ final class QueryExecutionTimeLogger implements QueryExecutionTimeLoggerInterfac
     private readonly LoggerInterface           $logger,
     private readonly ?EventDispatcherInterface $dispatcher = null,
     private readonly int                       $defaultThreshold = 100,
-    private readonly bool                      $enableBackTrace = false,
+    private readonly bool                      $enableParamsLog = false,
+    private readonly bool                      $enableBacktraceLog = false,
     ?Stopwatch                                 $stopwatch = null,
   ) {
     $this->stopwatch = $stopwatch ?? new Stopwatch();
@@ -39,7 +40,7 @@ final class QueryExecutionTimeLogger implements QueryExecutionTimeLoggerInterfac
     $stopWatchEvent = $event->stopwatchEvent->stop();
     $duration = $stopWatchEvent->getDuration();
 
-    if ($duration < $event->threshold) {
+    if ($duration <= $event->threshold) {
       return;
     }
 
@@ -47,15 +48,18 @@ final class QueryExecutionTimeLogger implements QueryExecutionTimeLoggerInterfac
 
     $context = [
       'sql' => $event->sql,
-      'params' => $event->params,
-      'types' => $event->types,
       'threshold' => $event->threshold,
       'startTime' => $stopWatchEvent->getStartTime(),
       'endTime' => $stopWatchEvent->getEndTime(),
       'executionTime' => $duration,
     ];
 
-    if ($this->enableBackTrace) {
+    if ($this->enableParamsLog) {
+      $context['params'] = $event->params;
+      $context['types'] = $event->types;
+    }
+
+    if ($this->enableBacktraceLog) {
       $backtrace = \debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
 
       // skip first since it's always the current method

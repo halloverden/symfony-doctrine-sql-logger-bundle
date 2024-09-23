@@ -22,7 +22,8 @@ final class HalloVerdenDoctrineSqlLoggerBundle extends AbstractBundle {
             [
               'connection' => 'default',
               'threshold' => 100,
-              'backtrace' => false,
+              'paramsLog' => false,
+              'backtraceLog' => false,
               'logger' => 'logger'
             ]
           ])
@@ -31,7 +32,8 @@ final class HalloVerdenDoctrineSqlLoggerBundle extends AbstractBundle {
             ->children()
               ->scalarNode('connection')->defaultValue('default')->end()
               ->integerNode('threshold')->defaultValue(100)->end()
-              ->booleanNode('backtrace')->defaultValue(false)->end()
+              ->booleanNode('paramsLog')->defaultValue(false)->end()
+              ->booleanNode('backtraceLog')->defaultValue(false)->end()
               ->scalarNode('logger')->defaultValue('logger')->end()
             ->end()
           ->end()
@@ -50,7 +52,8 @@ final class HalloVerdenDoctrineSqlLoggerBundle extends AbstractBundle {
             service($loggerConfig['logger']),
             service('event_dispatcher')->nullOnInvalid(),
             $loggerConfig['threshold'],
-            $loggerConfig['backtrace'],
+            $loggerConfig['paramsLog'],
+            $loggerConfig['backtraceLog'],
             service('debug.stopwatch')->nullOnInvalid()
           ])
         ->alias(QueryExecutionTimeLoggerInterface::class, $queryExecutionTimeLoggerId)
