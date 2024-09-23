@@ -61,10 +61,10 @@ final class HalloVerdenDoctrineSqlLoggerBundle extends AbstractBundle {
           ->tag('doctrine.middleware', ['connection' => $loggerConfig['connection']])
       ;
 
-      $builder->registerAliasForArgument($queryExecutionTimeLoggerId, QueryExecutionTimeLoggerInterface::class, $loggerConfig['connection'] . 'QueryExecutionTimeLogger');
-
       if ($loggerConfig['connection'] === 'default') {
         $builder->setAlias(QueryExecutionTimeLogger::class, $queryExecutionTimeLoggerId);
+      } else {
+        $builder->registerAliasForArgument($queryExecutionTimeLoggerId, QueryExecutionTimeLoggerInterface::class, $loggerConfig['connection'] . 'QueryExecutionTimeLogger');
       }
     }
   }
