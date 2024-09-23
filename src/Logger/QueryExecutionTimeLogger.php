@@ -2,6 +2,7 @@
 
 namespace HalloVerden\DoctrineSqlLoggerBundle\Logger;
 
+use HalloVerden\DoctrineSqlLoggerBundle\Context\QueryExecutionTimeContext;
 use HalloVerden\DoctrineSqlLoggerBundle\Event\QueryExecutionTimeEvent;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
@@ -14,9 +15,9 @@ final class QueryExecutionTimeLogger implements QueryExecutionTimeLoggerInterfac
   private readonly Stopwatch $stopwatch;
 
   /**
-   * @var int[]
+   * @var QueryExecutionTimeContext[]
    */
-  private array $thresholds = [];
+  private array $contexts = [];
 
   /**
    * QueryExecutionTimeLogger constructor.
@@ -33,14 +34,15 @@ final class QueryExecutionTimeLogger implements QueryExecutionTimeLoggerInterfac
   }
 
   public function start(string $sql, array $params = [], array $types = []): QueryExecutionTimeEvent {
-    return new QueryExecutionTimeEvent($this->stopwatch->start($this->createStopwatchName()), $this->getThreshold(), $sql, $params, $types);
+    $uuid = Uuid::v4();
+    return new QueryExecutionTimeEvent($this->stopwatch->start(self::STOPWATCH_NAME_PREFIX . $uuid), $this->getContext(), $sql, $uuid, $params, $types);
   }
 
   public function stop(QueryExecutionTimeEvent $event): void {
     $stopWatchEvent = $event->stopwatchEvent->stop();
     $duration = $stopWatchEvent->getDuration();
 
-    if ($duration <= $event->threshold) {
+    if ($duration <= $event->context->threshold) {
       return;
     }
 
@@ -48,10 +50,12 @@ final class QueryExecutionTimeLogger implements QueryExecutionTimeLoggerInterfac
 
     $context = [
       'sql' => $event->sql,
-      'threshold' => $event->threshold,
+      'executionTime' => $duration,
+      'eventUuid' => $event->uuid,
+      'eventContext' => $event->context->toArray(),
+      'stopwatchEvent' => $stopWatchEvent->getName(),
       'startTime' => $stopWatchEvent->getStartTime(),
       'endTime' => $stopWatchEvent->getEndTime(),
-      'executionTime' => $duration,
     ];
 
     if ($this->enableParamsLog) {
@@ -78,19 +82,15 @@ final class QueryExecutionTimeLogger implements QueryExecutionTimeLoggerInterfac
   /**
    * @inheritDoc
    */
-  public function setThresholds(array $thresholds): void {
-    $this->thresholds = $thresholds;
-  }
-
-  private function getThreshold(): int {
-    return \array_shift($this->thresholds) ?? $this->getDefaultThreshold();
+  public function addContext(QueryExecutionTimeContext ...$contexts): void {
+    \array_push($this->contexts, ...$contexts);
   }
 
   /**
-   * @return string
+   * @return QueryExecutionTimeContext
    */
-  private function createStopwatchName(): string {
-    return self::STOPWATCH_NAME_PREFIX . Uuid::v4();
+  private function getContext(): QueryExecutionTimeContext {
+    return \array_shift($this->contexts) ?? new QueryExecutionTimeContext($this->getDefaultThreshold());
   }
 
 }

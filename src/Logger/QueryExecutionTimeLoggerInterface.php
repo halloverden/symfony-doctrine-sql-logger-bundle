@@ -2,6 +2,7 @@
 
 namespace HalloVerden\DoctrineSqlLoggerBundle\Logger;
 
+use HalloVerden\DoctrineSqlLoggerBundle\Context\QueryExecutionTimeContext;
 use HalloVerden\DoctrineSqlLoggerBundle\Event\QueryExecutionTimeEvent;
 
 interface QueryExecutionTimeLoggerInterface {
@@ -10,9 +11,9 @@ interface QueryExecutionTimeLoggerInterface {
   public function getDefaultThreshold(): int;
 
   /**
-   * @param int[] $thresholds
+   * @param QueryExecutionTimeContext ...$contexts
    *
    * @return void
    */
-  public function setThresholds(array $thresholds): void;
+  public function addContext(QueryExecutionTimeContext ...$contexts): void;
 }
