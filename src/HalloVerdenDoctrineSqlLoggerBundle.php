@@ -18,7 +18,14 @@ final class HalloVerdenDoctrineSqlLoggerBundle extends AbstractBundle {
       ->addDefaultsIfNotSet()
       ->children()
         ->arrayNode('loggers')
-          ->requiresAtLeastOneElement()
+          ->defaultValue([
+            [
+              'connection' => 'default',
+              'threshold' => 100,
+              'backtrace' => false,
+              'logger' => 'logger'
+            ]
+          ])
           ->arrayPrototype()
             ->addDefaultsIfNotSet()
             ->children()
