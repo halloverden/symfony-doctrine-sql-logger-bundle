@@ -19,8 +19,7 @@ final class HalloVerdenDoctrineSqlLoggerBundle extends AbstractBundle {
       ->children()
         ->arrayNode('loggers')
           ->defaultValue([
-            [
-              'connection' => 'default',
+            'default' => [
               'threshold' => 100,
               'paramsLog' => false,
               'backtraceLog' => false,
