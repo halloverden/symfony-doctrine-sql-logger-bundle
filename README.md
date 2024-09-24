@@ -76,6 +76,9 @@ readonly class MyRepository {
 }
 ```
 
+If more than one logger is defined you can inject the correct logger by prefixing the variable name with the connection name.
+For example `$myConnectionQueryExecutionTimeLogger`
+
 ### QueryExecutionTimeEvent
 When a query exceeds the threshold a `QueryExecutionTimeEvent` is dispatched.
 
