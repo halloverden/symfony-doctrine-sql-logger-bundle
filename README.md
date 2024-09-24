@@ -52,30 +52,31 @@ and it wil log query execution time on the default connection for all queries th
 ```yaml
 hallo_verden_doctrine_sql_logger:
     loggers:
-        HalloVerden\DoctrineSqlLoggerBundle\Loggers\QueryExecutionTimeLogger:
-            enabled: true
-            connections:
-                - default
+        -   connection: default
+            threshold: 100
+            paramsLog: false
+            backtraceLog: false
+            logger: logger
 ```
 
-Set enabled to false to disable QueryExecutionTimeLogger. 
-And you can add the connections you want to enable logging on.
+### Change context for specific query
+Before executing a query you can change the context by injecting `QueryExecutionTimeLoggerInterface` and add a context:
 
-You can also add your own loggers by adding them to loggers in the config.
-
-### QueryExecutionTimeLogger
-if you want to log backtrace of the query with QueryExecutionTimeLogger add this to services.yaml:
-
-```yaml
-HalloVerden\DoctrineSqlLoggerBundle\Loggers\QueryExecutionTimeLogger:
-    calls:
-        - ['setEnableBacktrace', [true]]
+```php
+readonly class MyRepository {
+    public function __construct(
+        private QueryExecutionTimeLoggerInterface $queryExecutionTimeLogger
+    ) {
+    }
+    
+    public function executeQuery(): User {
+        $this->queryExecutionTimeLogger->addContext(new QueryExecutionTimeContext(threshold: 500));
+        // ... Execute query
+    }
+}
 ```
 
-if you want to change the execution time threshold for logging add this to services.yaml:
+### QueryExecutionTimeEvent
+When a query exceeds the threshold a `QueryExecutionTimeEvent` is dispatched.
 
-```yaml
-HalloVerden\DoctrineSqlLoggerBundle\Loggers\QueryExecutionTimeLogger:
-    calls:
-        - ['setExecutionTimeThreshold', [150]]
-```
+Keep in mind that any query executed within this event will not be timed and logged.
