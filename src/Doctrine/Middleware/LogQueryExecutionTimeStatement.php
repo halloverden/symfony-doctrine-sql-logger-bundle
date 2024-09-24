@@ -10,10 +10,14 @@ use HalloVerden\DoctrineSqlLoggerBundle\Logger\QueryExecutionTimeLoggerInterface
 
 final class LogQueryExecutionTimeStatement extends AbstractStatementMiddleware {
 
-  /** @var array<int,mixed>|array<string,mixed> */
+  /**
+   * @var array<int|string,mixed>
+   */
   private array $params = [];
 
-  /** @var array<int,int>|array<string,int> */
+  /**
+   * @var array<int|string,ParameterType>
+   */
   private array $types = [];
 
   /**
