@@ -15,8 +15,8 @@ final class QueryExecutionTimeEvent extends Event {
   public function __construct(
     public readonly StopwatchEvent            $stopwatchEvent,
     public readonly QueryExecutionTimeContext $context,
-    public readonly string                    $sql,
     public readonly Uuid                      $uuid,
+    public readonly string                    $sql,
     public readonly array                     $params = [],
     public readonly array                     $types = [],
   ) {

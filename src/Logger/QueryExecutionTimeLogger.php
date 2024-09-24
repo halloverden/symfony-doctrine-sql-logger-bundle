@@ -40,7 +40,7 @@ final class QueryExecutionTimeLogger implements QueryExecutionTimeLoggerInterfac
     }
 
     $uuid = Uuid::v4();
-    return new QueryExecutionTimeEvent($this->stopwatch->start(self::STOPWATCH_NAME_PREFIX . $uuid), $this->getContext(), $sql, $uuid, $params, $types);
+    return new QueryExecutionTimeEvent($this->stopwatch->start(self::STOPWATCH_NAME_PREFIX . $uuid), $this->getContext(), $uuid, $sql, $params, $types);
   }
 
   public function stop(QueryExecutionTimeEvent $event): void {
