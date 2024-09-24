@@ -27,9 +27,9 @@ final class HalloVerdenDoctrineSqlLoggerBundle extends AbstractBundle {
               'logger' => 'logger'
             ]
           ])
+          ->useAttributeAsKey('connection')
           ->arrayPrototype()
             ->addDefaultsIfNotSet()
-            ->useAttributeAsKey('connection')
             ->children()
               ->scalarNode('connection')->defaultValue('default')->end()
               ->integerNode('threshold')->defaultValue(100)->end()
