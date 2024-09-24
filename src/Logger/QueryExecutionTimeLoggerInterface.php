@@ -6,9 +6,9 @@ use HalloVerden\DoctrineSqlLoggerBundle\Context\QueryExecutionTimeContext;
 use HalloVerden\DoctrineSqlLoggerBundle\Event\QueryExecutionTimeEvent;
 
 interface QueryExecutionTimeLoggerInterface {
-  public function start(string $sql, array $params = [], array $types = []): QueryExecutionTimeEvent;
+  public function start(string $sql, array $params = [], array $types = []): ?QueryExecutionTimeEvent;
   public function stop(QueryExecutionTimeEvent $event): void;
-  public function getDefaultThreshold(): int;
+  public function getDefaultContext(): QueryExecutionTimeContext;
 
   /**
    * @param QueryExecutionTimeContext ...$contexts

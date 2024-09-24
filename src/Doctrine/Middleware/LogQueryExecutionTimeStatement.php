@@ -47,7 +47,9 @@ final class LogQueryExecutionTimeStatement extends AbstractStatementMiddleware {
     try {
       return parent::execute();
     } finally {
-      $this->logger->stop($event);
+      if (null !== $event) {
+        $this->logger->stop($event);
+      }
     }
   }
 }

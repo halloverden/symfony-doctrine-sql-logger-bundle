@@ -13,6 +13,7 @@ final class QueryExecutionTimeLogger implements QueryExecutionTimeLoggerInterfac
   private const STOPWATCH_NAME_PREFIX = 'query_execution_time_logger_';
 
   private readonly Stopwatch $stopwatch;
+  private bool $enabled = true;
 
   /**
    * @var QueryExecutionTimeContext[]
@@ -33,12 +34,20 @@ final class QueryExecutionTimeLogger implements QueryExecutionTimeLoggerInterfac
     $this->stopwatch = $stopwatch ?? new Stopwatch();
   }
 
-  public function start(string $sql, array $params = [], array $types = []): QueryExecutionTimeEvent {
+  public function start(string $sql, array $params = [], array $types = []): ?QueryExecutionTimeEvent {
+    if (!$this->enabled) {
+      return null;
+    }
+
     $uuid = Uuid::v4();
     return new QueryExecutionTimeEvent($this->stopwatch->start(self::STOPWATCH_NAME_PREFIX . $uuid), $this->getContext(), $sql, $uuid, $params, $types);
   }
 
   public function stop(QueryExecutionTimeEvent $event): void {
+    if (!$this->enabled) {
+      return;
+    }
+
     $stopWatchEvent = $event->stopwatchEvent->stop();
     $duration = $stopWatchEvent->getDuration();
 
@@ -46,12 +55,15 @@ final class QueryExecutionTimeLogger implements QueryExecutionTimeLoggerInterfac
       return;
     }
 
+    $this->enabled = false;
     $this->dispatcher?->dispatch($event);
+    $this->enabled = true;
 
     $context = [
       'sql' => $event->sql,
       'executionTime' => $duration,
       'eventUuid' => $event->uuid,
+      'threshold' => $event->context->threshold,
       'eventContext' => $event->context->toArray(),
       'stopwatchEvent' => $stopWatchEvent->getName(),
       'startTime' => $stopWatchEvent->getStartTime(),
@@ -75,8 +87,8 @@ final class QueryExecutionTimeLogger implements QueryExecutionTimeLoggerInterfac
     $this->logger->warning('Query took {executionTime} ms where threshold is {threshold} ms', $context);
   }
 
-  public function getDefaultThreshold(): int {
-    return $this->defaultThreshold;
+  public function getDefaultContext(): QueryExecutionTimeContext {
+    return new QueryExecutionTimeContext($this->defaultThreshold);
   }
 
   /**
@@ -90,7 +102,7 @@ final class QueryExecutionTimeLogger implements QueryExecutionTimeLoggerInterfac
    * @return QueryExecutionTimeContext
    */
   private function getContext(): QueryExecutionTimeContext {
-    return \array_shift($this->contexts) ?? new QueryExecutionTimeContext($this->getDefaultThreshold());
+    return \array_shift($this->contexts) ?? $this->getDefaultContext();
   }
 
 }

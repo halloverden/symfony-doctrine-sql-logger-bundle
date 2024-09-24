@@ -30,7 +30,9 @@ final class LogQueryExecutionTimeConnection extends AbstractConnectionMiddleware
     try {
       return parent::query($sql);
     } finally {
-      $this->logger->stop($event);
+      if (null !== $event) {
+        $this->logger->stop($event);
+      }
     }
   }
 
@@ -40,7 +42,9 @@ final class LogQueryExecutionTimeConnection extends AbstractConnectionMiddleware
     try {
       return parent::exec($sql);
     } finally {
-      $this->logger->stop($event);
+      if (null !== $event) {
+        $this->logger->stop($event);
+      }
     }
   }
 
