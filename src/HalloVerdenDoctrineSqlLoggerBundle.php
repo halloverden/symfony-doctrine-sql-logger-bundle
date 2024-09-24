@@ -31,7 +31,6 @@ final class HalloVerdenDoctrineSqlLoggerBundle extends AbstractBundle {
           ->arrayPrototype()
             ->addDefaultsIfNotSet()
             ->children()
-              ->scalarNode('connection')->defaultValue('default')->end()
               ->integerNode('threshold')->defaultValue(100)->end()
               ->booleanNode('paramsLog')->defaultValue(false)->end()
               ->booleanNode('backtraceLog')->defaultValue(false)->end()
@@ -45,8 +44,8 @@ final class HalloVerdenDoctrineSqlLoggerBundle extends AbstractBundle {
   public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void {
     $alias = $this->getContainerExtension()->getAlias();
 
-    foreach ($config['loggers'] as $loggerConfig) {
-      $queryExecutionTimeLoggerId = $alias . '.query_execution_time_logger.' . $loggerConfig['connection'];
+    foreach ($config['loggers'] as $connection => $loggerConfig) {
+      $queryExecutionTimeLoggerId = $alias . '.query_execution_time_logger.' . $connection;
       $container->services()
         ->set($queryExecutionTimeLoggerId, QueryExecutionTimeLogger::class)
           ->args([
@@ -57,14 +56,14 @@ final class HalloVerdenDoctrineSqlLoggerBundle extends AbstractBundle {
             $loggerConfig['backtraceLog'],
             service('debug.stopwatch')->nullOnInvalid()
           ])
-        ->set($alias . '.doctrine_middleware.' . $loggerConfig['connection'], LogQueryExecutionTimeMiddleware::class)
+        ->set($alias . '.doctrine_middleware.' . $connection, LogQueryExecutionTimeMiddleware::class)
           ->args([service($queryExecutionTimeLoggerId)])
-          ->tag('doctrine.middleware', ['connection' => $loggerConfig['connection']])
+          ->tag('doctrine.middleware', ['connection' => $connection])
       ;
 
-      $builder->registerAliasForArgument($queryExecutionTimeLoggerId, QueryExecutionTimeLoggerInterface::class, $loggerConfig['connection'] . 'QueryExecutionTimeLogger');
+      $builder->registerAliasForArgument($queryExecutionTimeLoggerId, QueryExecutionTimeLoggerInterface::class, $connection . 'QueryExecutionTimeLogger');
 
-      if ($loggerConfig['connection'] === 'default') {
+      if ($connection === 'default') {
         $builder->setAlias(QueryExecutionTimeLoggerInterface::class, $queryExecutionTimeLoggerId);
       }
     }
