@@ -17,7 +17,7 @@ final readonly class LogQueryExecutionTimeMiddleware implements Middleware {
   }
 
   public function wrap(Driver $driver): Driver {
-    return new LogQueryExecutionTimeDriver($driver, $this->logger);
+    return new LogQueryExecutionTimeDriverMiddleware($driver, $this->logger);
   }
 
 }

@@ -8,7 +8,7 @@ use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\ParameterType;
 use HalloVerden\DoctrineSqlLoggerBundle\Logger\QueryExecutionTimeLoggerInterface;
 
-final class LogQueryExecutionTimeStatement extends AbstractStatementMiddleware {
+final class LogQueryExecutionTimeStatementMiddleware extends AbstractStatementMiddleware {
 
   /**
    * @var array<int|string,mixed>

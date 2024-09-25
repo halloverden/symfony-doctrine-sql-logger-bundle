@@ -8,7 +8,7 @@ use Doctrine\DBAL\Driver\Result;
 use Doctrine\DBAL\Driver\Statement;
 use HalloVerden\DoctrineSqlLoggerBundle\Logger\QueryExecutionTimeLoggerInterface;
 
-final class LogQueryExecutionTimeConnection extends AbstractConnectionMiddleware {
+final class LogQueryExecutionTimeConnectionMiddleware extends AbstractConnectionMiddleware {
 
   /**
    * @internal This connection can be only instantiated by its middleware.
@@ -21,7 +21,7 @@ final class LogQueryExecutionTimeConnection extends AbstractConnectionMiddleware
   }
 
   public function prepare(string $sql): Statement {
-    return new LogQueryExecutionTimeStatement(parent::prepare($sql), $this->logger, $sql);
+    return new LogQueryExecutionTimeStatementMiddleware(parent::prepare($sql), $this->logger, $sql);
   }
 
   public function query(string $sql): Result {
