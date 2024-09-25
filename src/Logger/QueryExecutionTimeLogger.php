@@ -60,7 +60,7 @@ final class QueryExecutionTimeLogger implements QueryExecutionTimeLoggerInterfac
     $this->enabled = true;
 
     $context = [
-      'sql' => $event->sql,
+      'sqlQuery' => $event->sqlQuery,
       'executionTime' => $duration,
       'eventUuid' => $event->uuid,
       'threshold' => $event->context->threshold,
