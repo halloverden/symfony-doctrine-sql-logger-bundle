@@ -91,9 +91,6 @@ final class QueryExecutionTimeLogger implements QueryExecutionTimeLoggerInterfac
     return new QueryExecutionTimeContext($this->defaultThreshold);
   }
 
-  /**
-   * @inheritDoc
-   */
   public function addContext(QueryExecutionTimeContext ...$contexts): void {
     \array_push($this->contexts, ...$contexts);
   }
