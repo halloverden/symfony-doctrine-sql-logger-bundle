@@ -1,4 +1,0 @@
-services:
-    HalloVerden\DoctrineSqlLoggerBundle\Loggers\QueryExecutionTimeLogger:
-        arguments:
-            $executionTimeLogger: '@logger'

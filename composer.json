@@ -12,14 +12,15 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.1",
-        "doctrine/doctrine-bundle": "^2.1",
-        "symfony/stopwatch": "^5.4|^6.1",
-        "symfony/monolog-bundle": "^3.5"
+        "php": ">=8.2",
+        "doctrine/doctrine-bundle": "^2.6",
+        "symfony/stopwatch": "^6.4|^7.1",
+        "doctrine/dbal": "^4.0",
+        "symfony/uid": "^6.4|^7.1"
     },
     "autoload": {
         "psr-4": {
-            "HalloVerden\\DoctrineSqlLoggerBundle\\": ""
+            "HalloVerden\\DoctrineSqlLoggerBundle\\": "src/"
         }
     }
 }
